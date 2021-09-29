@@ -33,6 +33,24 @@ div.makeStyles-container-1{
   color: #61dafb;
 }
 
+.gestures-modal-show {
+  width: 50px;
+  height: 50px;
+  border-width: 0;
+  border-radius: 25px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 10;
+  cursor: pointer;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

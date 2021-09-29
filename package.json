@@ -8,8 +8,10 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "bootstrap": "^5.1.1",
     "chat-ui-react": "^0.2.15",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.6.4",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "react-webcam": "^5.2.0"

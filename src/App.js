@@ -3,11 +3,11 @@ import React, { useRef, useState, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
 import "./App.css";
-import { nextFrame } from "@tensorflow/tfjs";
 import { MuiChat, ChatController } from "chat-ui-react";
-// 2. TODO - Import drawing utility here
-// e.g. import { drawRect } from "./utilities";
 import { drawRect } from "./utilities";
+import Modal from "react-bootstrap/Modal";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 function App() {
   const webcamRef = useRef(null);
@@ -19,8 +19,6 @@ function App() {
 
   // Main function
   const runCoco = async () => {
-    // 3. TODO - Load network 
-    // e.g. const net = await cocossd.load();
     // https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json
     const net = await tf.loadGraphModel('https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json')
 
@@ -50,7 +48,7 @@ function App() {
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
-      // 4. TODO - Make Detections
+      // Make Detections
       const img = tf.browser.fromPixels(video)
       const resized = tf.image.resizeBilinear(img, [640, 480])
       const casted = resized.cast('int32')
@@ -64,7 +62,7 @@ function App() {
       // Draw mesh
       const ctx = canvasRef.current.getContext("2d");
 
-      // 5. TODO - Update drawing utility
+      // Update drawing utility
       // drawSomething(obj, ctx)
       requestAnimationFrame(() => { drawRect(boxes[0], classes[0], scores[0], 0.75, videoWidth, videoHeight, ctx, mes) });
 
@@ -90,8 +88,6 @@ function App() {
       tf.dispose(casted)
       tf.dispose(expanded)
       tf.dispose(obj)
-      console.log(mes)
-
     }
   };
 
@@ -112,9 +108,49 @@ function App() {
   }, [chatCtl]);
 
 
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const showModal = () => {
+    setIsOpen(true);
+  };
+
+  const hideModal = () => {
+    setIsOpen(false);
+  };
+
+  function importAll(r) {
+    let images = {};
+    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+    return images;
+  }
+  
+  let images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
+  images = Object.entries(images)
+  for (let i = 0; i < images.length; i++)
+	  images[i][0] = images[i][0].split('.')[0]
+
+  console.log(images)
 
   return (
     <div className="App">
+	  <button className="gestures-modal-show" onClick={showModal}>?</button>
+	  <div className="gestures-info" />
+
+      <Modal show={isOpen} onHide={hideModal}>
+        <Modal.Header>Supported Gestures</Modal.Header>
+        <Modal.Body>
+	  		{
+				images.map((image, key) =>
+					<div className="image_displayer">
+						<img src={image[1]} key={key}/>
+						<p>{image[0]}</p>
+					</div>
+				)
+			}
+	    </Modal.Body>
+      </Modal>
+
+
       <header className="App-header">
         <Webcam
           ref={webcamRef}
